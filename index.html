@@ -1,8 +1,99 @@
-<html>
- <head>
-   <title></title>
- </head>
- <body>
-   <h1>hello world</h1>
- </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lacak Lokasi Berdasarkan IP Address</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lacak Lokasi Berdasarkan IP Address</h1>
+    <input type="text" id="ipInput" placeholder="Masukkan IP Address (contoh: 8.8.8.8)" />
+    <button onclick="trackLocation()">Lacak Lokasi</button>
+    <div id="result">
+        <h3>Detail Lokasi IP:</h3>
+        <table>
+            <tr><th>Field</th><th>Value</th></tr>
+            <tr><td>IP Address</td><td id="ip"></td></tr>
+            <tr><td>Negara</td><td id="country"></td></tr>
+            <tr><td>Wilayah</td><td id="region"></td></tr>
+            <tr><td>Kota</td><td id="city"></td></tr>
+            <tr><td>Latitude</td><td id="lat"></td></tr>
+            <tr><td>Longitude</td><td id="lon"></td></tr>
+            <tr><td>ISP</td><td id="isp"></td></tr>
+            <tr><td>Timezone</td><td id="timezone"></td></tr>
+        </table>
+    </div>
+
+    <script>
+        async function trackLocation() {
+            const ipAddress = document.getElementById('ipInput').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!ipAddress) {
+                alert("Silakan masukkan IP Address!");
+                return;
+            }
+
+            try {
+                // Fetch location data dari ip-api
+                const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+                const data = await response.json();
+
+                if (data.status === "success") {
+                    // Isi tabel dengan data lokasi
+                    document.getElementById('ip').innerText = data.query;
+                    document.getElementById('country').innerText = data.country;
+                    document.getElementById('region').innerText = data.regionName;
+                    document.getElementById('city').innerText = data.city;
+                    document.getElementById('lat').innerText = data.lat;
+                    document.getElementById('lon').innerText = data.lon;
+                    document.getElementById('isp').innerText = data.isp;
+                    document.getElementById('timezone').innerText = data.timezone;
+
+                    // Tampilkan hasil
+                    resultDiv.style.display = "block";
+                } else {
+                    alert("Tidak dapat menemukan lokasi. Periksa IP Address yang dimasukkan.");
+                }
+            } catch (error) {
+                alert("Terjadi kesalahan saat melacak lokasi. Coba lagi.");
+                console.error(error);
+            }
+        }
+    </script>
+</body>
 </html>
